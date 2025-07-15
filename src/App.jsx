@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { baseUrl, headers } from "./services/api";
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
@@ -9,12 +10,42 @@ export default function App() {
   const [size, setSize] = useState("1024x1024");
   const [style, setStyle] = useState("vivid");
 
+  const [loading, setLoading] = useState(false);
+  const [imageData, setImageData] = useState(null);
+
   useEffect(() => {}, []);
 
   const generate = async (e) => {
     e.preventDefault();
 
-    console.log("Image generated");
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${baseUrl}/images/generations`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          prompt,
+          model,
+          n,
+          quality,
+          response_format: responseFormat,
+          size,
+          style,
+        }),
+      });
+
+      if (!res.ok)
+        throw new Error("Can't generate image right now, try again later.");
+
+      const { data } = await res.json();
+
+      if (data) setImageData(data[0]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -23,7 +54,7 @@ export default function App() {
         <div className="col-12 col-md-10">
           <div className="card rounded-3">
             <div className="card-body">
-              <div className="row">
+              <div className="row g-3">
                 <div className="col-12 col-md-5 col-lg-4">
                   <form onSubmit={(e) => generate(e)}>
                     <div>
@@ -42,18 +73,40 @@ export default function App() {
                       <button
                         type="submit"
                         className="btn btn-primary rounded-pill w-100 mt-2"
+                        disabled={loading}
                       >
-                        Submit
+                        {loading ? "Generating image..." : "Submit"}
                       </button>
                     </div>
                   </form>
                 </div>
                 <div className="col-12 col-md-7 col-lg-8">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Laboriosam nulla quae obcaecati, quod nihil iusto recusandae
-                  laudantium possimus tempora. Praesentium numquam quos earum
-                  incidunt laudantium molestiae voluptates sunt pariatur
-                  reiciendis!
+                  {imageData && imageData?.url && (
+                    <div>
+                      <img
+                        width="100%"
+                        height="100%"
+                        className="rounded-3"
+                        src={imageData?.url}
+                        alt="Generated image"
+                      />
+                      <p className="mt-3 mb-0">{imageData?.revised_prompt}</p>
+                      <a
+                        className="btn btn-success rounded-pill w-100 mt-3"
+                        href={imageData?.url}
+                        target="_blank"
+                        download
+                      >
+                        Download image
+                      </a>
+                    </div>
+                  )}
+                  {!imageData && !imageData?.url && (
+                    <div
+                      className="w-100 bg-secondary rounded-3"
+                      style={{ height: 500 }}
+                    ></div>
+                  )}
                 </div>
               </div>
             </div>
