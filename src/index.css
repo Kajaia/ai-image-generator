@@ -3,3 +3,7 @@
 * {
     font-family: "Fira Mono", monospace;
 }
+
+.bg-dark-secondary {
+    background-color: #303539;
+}
