@@ -7,3 +7,21 @@
 .bg-dark-secondary {
     background-color: #303539;
 }
+
+.form-switch {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+[data-bs-theme="light"] .bg-dark-secondary {
+    background-color: #d9d9d9;
+}
+
+[data-bs-theme="light"] .bg-danger {
+    color: #fff;
+}
+
+[data-bs-theme="light"] .bg-danger:hover {
+    color: #fff;
+}

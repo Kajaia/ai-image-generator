@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { baseUrl, headers } from "./services/api";
+import ThemeToggler from "./components/ThemeToggler";
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
@@ -49,9 +50,10 @@ export default function App() {
   };
 
   return (
-    <div className="container">
+    <div className="container my-5">
       <div className="row justify-content-center">
         <h1 className="text-center mb-4">AI Image Generator</h1>
+        <ThemeToggler />
         <div className="col-12 col-md-10">
           <div className="card rounded-3">
             <div className="card-body">
